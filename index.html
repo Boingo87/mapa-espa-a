@@ -6,10 +6,17 @@
   <title>Mapa Interactivo de España</title>
   <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" />
   <style>
-    #map {
-      height: 100vh; /* Mapa ocupa toda la altura de la ventana */
-      width: 100%;
+    body, html {
+      margin: 0;
+      padding: 0;
+      height: 100%;
     }
+
+    #map {
+      height: 100%; /* Asegura que el mapa ocupe todo el alto disponible */
+      width: 100%; /* Asegura que el mapa ocupe todo el ancho disponible */
+    }
+
     #form-container {
       position: absolute;
       top: 10px;
@@ -19,9 +26,38 @@
       border-radius: 8px;
       box-shadow: 0 2px 5px rgba(0, 0, 0, 0.3);
       z-index: 1000;
+      width: 100%;
+      max-width: 300px;
+      box-sizing: border-box;
     }
+
     #marker-list {
       margin-top: 10px;
+    }
+
+    /* Control de zoom en la esquina inferior derecha */
+    .leaflet-control-zoom {
+      position: absolute !important;
+      bottom: 30px;
+      right: 10px;
+    }
+
+    /* Asegura que los botones de eliminar no tapen la interfaz */
+    #marker-list div {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+    button {
+      background-color: #ff5555;
+      border: none;
+      color: white;
+      padding: 5px;
+      cursor: pointer;
+      font-size: 0.8em;
+    }
+    button:hover {
+      background-color: #ff2222;
     }
   </style>
 </head>
@@ -76,36 +112,4 @@
     document.getElementById('location-form').addEventListener('submit', async (event) => {
       event.preventDefault();
       const name = document.getElementById('name').value.trim();
-      const locality = document.getElementById('locality').value.trim();
-
-      if (markers[name]) {
-        alert('Ya existe un marcador con este nombre. Por favor, elige otro.');
-        return;
-      }
-
-      const result = await geocode(locality);
-      if (result) {
-        const lat = result.lat;
-        const lon = result.lon;
-
-        // Añade un marcador al mapa
-        const marker = L.marker([lat, lon])
-          .addTo(map)
-          .bindPopup(`<b>${name}</b><br>${locality}`);
-        marker.openPopup();
-
-        // Almacena el marcador en el objeto
-        markers[name] = marker;
-
-        // Actualiza la lista de marcadores
-        updateMarkerList();
-
-        // Centra el mapa en la localidad
-        map.setView([lat, lon], 10);
-      } else {
-        alert('Localidad no encontrada.');
-      }
-    });
-  </script>
-</body>
-</html>
+      const locality = docu
